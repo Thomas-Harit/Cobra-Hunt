@@ -14,7 +14,7 @@ class Duck:
     y: int
     width : int
     height : int
-    speed: int = 1
+    speed: int
     sprite: pygame.Surface
 
     def __init__(self, sprite):
@@ -23,6 +23,7 @@ class Duck:
         self.height = sprite.get_height()
         self.x = -self.width
         self.y = random.randint(0, window_height - self.height)
+        self.speed = random.randint(3, 6)
 
     def move(self) -> None:
         self.x += self.speed
@@ -37,14 +38,20 @@ class Duck:
 
 loop: bool = True
 
-window = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+window = pygame.display.set_mode((window_width, window_height))
+
 duckSprite = pygame.image.load(os.path.join("assets", "duck.png"))
+background = pygame.image.load(os.path.join("assets", "background.png"))
+
+font = pygame.freetype.Font(os.path.join("assets", "font.ttf"), 24)
+text : pygame.Surface
 clock = pygame.time.Clock()
 
 score = 0
 DuckList: List[Duck] = []
 
 while loop == True:
+    clock.tick(40)
     if len(DuckList) == 0:
         DuckList.append(Duck(duckSprite))
     for event in pygame.event.get():
@@ -53,12 +60,17 @@ while loop == True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             for duck in DuckList:
                 if duck.contains(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
+                    score += 100
                     DuckList.remove(duck)
-    window.fill((0, 0, 0, 255))
+    window.blit(background, (0, 0))
+    text, rect = font.render(f"Score: {score}", (250, 253, 15))
+    window.blit(text, (620, 520))
     for duck in DuckList:
         duck.move()
         duck.display(window)
         if duck.x >= 800:
             DuckList.remove(duck)
     pygame.display.update()
-    clock.tick(60)
+
+pygame.quit()
+exit(0)
