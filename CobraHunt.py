@@ -21,6 +21,11 @@ class Duck:
 loop: bool = True
 
 window = pygame.display.set_mode((window_width, window_height))
+omegalili = pygame.image.load("/home/pmarguin/Bureau/omegalili/LiLinkedin.jpg")
+
+window.fill((0, 0, 0, 255))
+window.blit(omegalili, (100, 100))
+pygame.display.update()
 
 score = 0
 DuckList: List[Duck] = []
