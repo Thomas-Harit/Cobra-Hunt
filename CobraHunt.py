@@ -10,20 +10,30 @@ window_width: int = 800
 window_height: int = 600
 
 class Duck:
-    x: int = 0
-    y: int = 0
+    x: int
+    y: int
+    width : int
+    height : int
     speed: int = 1
     sprite: pygame.Surface
 
     def __init__(self, sprite):
-        self.y = random.randint(0, window_height)
         self.sprite = sprite
+        self.width = sprite.get_width()
+        self.height = sprite.get_height()
+        self.x = -self.width
+        self.y = random.randint(0, window_height - self.height)
 
-    def move(self):
+    def move(self) -> None:
         self.x += self.speed
     
-    def display(self, window: pygame.Surface):
+    def display(self, window: pygame.Surface) -> None:
         window.blit(self.sprite, (self.x, self.y))
+
+    def contains(self, x: int, y: int) -> bool:
+        if self.x <= x and x <= self.x + self.width and self.y <= y and y <= self.y + self.height:
+            return True
+        return False
 
 loop: bool = True
 
@@ -41,16 +51,14 @@ while loop == True:
         if event.type == pygame.QUIT:
             loop = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if pygame.mouse.get_pressed(3)[0]:
-                print("button 0 pressed at ", end='')
-            if pygame.mouse.get_pressed(3)[1]:
-                print("button 1 pressed at ", end='')
-            if pygame.mouse.get_pressed(3)[2]:
-                print("button 2 pressed at ", end='')
-            print(pygame.mouse.get_pos()[0], " ", pygame.mouse.get_pos()[1])
+            for duck in DuckList:
+                if duck.contains(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
+                    DuckList.remove(duck)
     window.fill((0, 0, 0, 255))
     for duck in DuckList:
         duck.move()
         duck.display(window)
+        if duck.x >= 800:
+            DuckList.remove(duck)
     pygame.display.update()
     clock.tick(60)
