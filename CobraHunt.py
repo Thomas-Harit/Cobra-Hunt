@@ -11,12 +11,17 @@ class Duck:
     x: int = 0
     y: int = 0
     speed: int = 0
+    sprite: pygame.Surface
 
-    def __init__(self):
+    def __init__(self, sprite):
         self.y = random.randint(0, window_height)
+        self.sprite = sprite
 
     def move(self):
         self.x += self.speed
+    
+    def display(self, window: pygame.Surface):
+        window.blit(self.sprite, self.x, self.y)
 
 loop: bool = True
 
